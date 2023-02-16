@@ -118,6 +118,7 @@ export class ColumnChartComponent implements OnInit {
 
   constructor(private chartService: ChartsService) {
     if (typeof Highcharts === 'object') {
+
       draggable(Highcharts);
     }
   }
