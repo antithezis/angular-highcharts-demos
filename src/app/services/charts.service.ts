@@ -1,26 +1,32 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ColumnChart } from '../intefaces/columnChartData';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChartsService {
-
   private seriesOptions: Highcharts.Options = {};
   private dataUrl = "assets/data.json"
 
   constructor(private http: HttpClient) { }
 
   getData() {
-    return this.http.get<any[]>(this.dataUrl)
+    return this.http.get<ColumnChart[]>(this.dataUrl)
   }
 
-  buildColumnChart(params: any) {
+  buildColumnChart(categories: any, porcentajes: any) {
+
+    console.log(porcentajes)
+
     this.seriesOptions = {
       accessibility: {
         enabled: true,
       },
       chart: {
+        zooming: {
+          type: 'xy'
+        },
         type: 'column',
         events: {
           load: function() {
@@ -42,7 +48,7 @@ export class ChartsService {
       },
       xAxis: {
         max: 30,
-        categories: params,
+        categories: categories
       },
       yAxis: [
         {
@@ -56,6 +62,7 @@ export class ChartsService {
           },
         },
       ],
+      series: porcentajes,
       legend: {
         shadow: false,
       },
@@ -117,33 +124,6 @@ export class ChartsService {
           }
         },
       },
-      series: [
-
-        {
-          name: 'Jobs Ejecutados 1',
-          // data: [10, 15, 18, 20, 22, 25, 20, 0, 0, 0, 0, 0],
-          type: 'column',
-          data: [80, 73, 20, 30, 25, 10],
-        },
-        {
-          name: 'Jobs Ejecutados',
-          // data: [10, 15, 18, 20, 22, 25, 0, 20, 0, 0, 0, 0],
-          type: 'column',
-          data: [13, 25, 31, 33, 20, 30],
-        },
-        {
-          name: 'Jobs Ejecutados',
-          // data: [10, 15, 18, 20, 22, 25, 0, 0, 20, 0, 0, 0],
-          type: 'column',
-          data: [14, 20, 30, 18, 40, 32],
-        },
-        {
-          name: 'Jobs Ejecutados',
-          // data: [10, 15, 18, 20, 22, 25, 0, 0, 0, 20, 0, 0],
-          type: 'column',
-          data: [10, 20, 36, 43, 25, 15],
-        },
-      ],
     }
 
     return this.seriesOptions
