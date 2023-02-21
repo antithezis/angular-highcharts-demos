@@ -12,13 +12,10 @@ export class ChartsService {
   constructor(private http: HttpClient) { }
 
   getData() {
-    return this.http.get<ColumnChart[]>(this.dataUrl)
+    return this.http.get<ColumnChart>(this.dataUrl)
   }
 
   buildColumnChart(categories: any, porcentajes: any) {
-
-
-    console.log(categories, porcentajes, "Datos desde el servico")
 
     console.log(porcentajes)
 
@@ -51,7 +48,7 @@ export class ChartsService {
       },
       xAxis: {
         max: 30,
-        type: 'category'
+        categories: categories
       },
       yAxis: [
         {
@@ -135,7 +132,7 @@ export class ChartsService {
   }
 
   buildTwinChart(categories, porcentajes) {
-   this.seriesOptions = {
+    this.seriesOptions = {
       accessibility: {
         enabled: true,
       },
@@ -200,7 +197,7 @@ export class ChartsService {
           grouping: false,
           shadow: false,
           borderWidth: 1.5,
-          stacking: 'percent',
+          stacking: 'normal',
           opacity: 0.8,
           pointWidth: 13,
           pointPadding: 0.3,

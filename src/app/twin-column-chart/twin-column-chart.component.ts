@@ -1,7 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
-import { Welcome } from '../intefaces/columnChartData';
 import { ChartsService } from '../services/charts.service';
 //import HighchartsReact from 'highcharts-react-official';
 
@@ -13,7 +12,7 @@ import { ChartsService } from '../services/charts.service';
 })
 export class TwinColumnChartComponent implements OnInit {
 
-  dataChart: Welcome[]
+  dataChart: any[]
   categoires: any[]
 
   viewChart: boolean
@@ -35,27 +34,6 @@ export class TwinColumnChartComponent implements OnInit {
   getData() {
     this.chartService.getData().subscribe({
       next: data => {
-        this.dataChart = data.map((x: any) => ({
-          categories: x.machineName,
-          procentajes: Object.values(x.data.reduce((accumulator: any, currentValue: any) => {
-            const robotName = currentValue.robotName;
-            if (!accumulator[robotName]) {
-              accumulator[robotName] = {
-                name: robotName,
-                type: 'column',
-                data: []
-              };
-            }
-            accumulator[robotName].data.push(currentValue.percentage);
-            return accumulator;
-          }, {}))
-        }));
-
-        this.categoires = this.dataChart.map((x: any) => x.categories)
-
-        const melapela = this.dataChart.reduce((acc, val) => acc.concat(val), []);
-
-        this.buildData(melapela)
       }
     })
   }

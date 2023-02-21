@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import draggable from 'highcharts/modules/draggable-points';
-import { Welcome } from '../intefaces/columnChartData';
 import { ChartsService } from '../services/charts.service';
-//import HighchartsReact from 'highcharts-react-official';
 
 @Component({
   selector: 'app-column-chart',
@@ -12,8 +10,10 @@ import { ChartsService } from '../services/charts.service';
 })
 export class ColumnChartComponent implements OnInit {
 
-  dataChart: Welcome[]
-  categoires: any[]
+  dataChart: any
+
+  categories: any[]
+  seires: any[]
 
   viewChart: boolean
 
@@ -27,42 +27,103 @@ export class ColumnChartComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getData()
+    this.nuevoIntento()
     this.viewChart = false
+  }
+
+
+  nuevoIntento() {
+    this.chartService.getData().subscribe({
+      next: data => {
+        this.categories = data.actualData.map((machine: any) => machine.machineName)
+
+        let originalData = data.actualData
+
+        const numMachines = originalData.length;
+        // const numRobots = originalData[0].data.length;
+
+        const maxRobots = Math.max(...originalData.map((machine) => machine.data.length));
+
+        const percentageMatrix = Array(maxRobots)
+          .fill(null)
+          .map(() => Array(numMachines).fill(null));
+
+
+        originalData.forEach((machine, machineIndex) => {
+          machine.data.forEach((robot, robotIndex) => {
+            percentageMatrix[robotIndex][machineIndex] = robot.percentage;
+          });
+        });
+
+        // const percentageData = percentageMatrix.map((robotPercentages) =>
+        //   robotPercentages.map((percentage) => percentage ?? 0)
+        // );
+        
+        const percentageData = percentageMatrix.map((robotPercentages) => {
+          const data = robotPercentages.map((percentage) => percentage ?? 0);
+          return { type: 'column', data };
+        });
+        this.showChart(this.categories, percentageData)
+
+
+      }
+    })
   }
 
   getData() {
     this.chartService.getData().subscribe({
       next: data => {
-        this.dataChart = data.map((x: any) => ({
-          categories: x.machineName,
-          procentajes: Object.values(x.data.reduce((accumulator: any, currentValue: any) => {
-            const robotName = currentValue.robotName;
-            if (!accumulator[robotName]) {
-              accumulator[robotName] = {
-                name: robotName,
-                type: 'column',
-                data: []
-              };
+        this.dataChart = data.actualData
+        this.categories = data.actualData.map((machine: any) => machine.machineName)
+        this.seires = data.actualData.map((machine: any) => {
+          return machine.data.map((robot: any) => {
+            return {
+              type: 'column',
+              name: robot.robotName,
+              data: [robot.percentage]
             }
-            accumulator[robotName].data.push(currentValue.percentage);
-            return accumulator;
-          }, {}))
-        }));
+          })
+        }).flat()
 
-        this.categoires = this.dataChart.map((x: any) => x.categories)
+        let robotLength = 0
 
-        const melapela = this.dataChart.reduce((acc, val) => acc.concat(val), []);
+        for (let i = 0; i < data.actualData.length; i++) {
+          robotLength += data.actualData[i].data.length
+        }
 
-        this.buildData(melapela)
+        this.buildData(robotLength)
+        this.showChart(this.categories, this.seires)
       }
     })
   }
 
-  buildData(melapela: any) {
-    let test = melapela.map((x: any) => x.procentajes)
-    let porcentajes = test.reduce((acc, val) => acc.concat(val), [])
-    this.showChart(this.categoires, porcentajes)
+  buildData(robotLength: number) {
+    let arregloRobots: any = new Array(robotLength)
+    let arregloMachines: any = new Array(this.categories.length)
+
+
+    for (let i = 0; i < arregloRobots.length; i++) {
+      arregloRobots[i] = arregloMachines
+    }
+
+
+    debugger;
+    for (let i = 0; i < this.dataChart.length; i++) {
+      let machine = this.dataChart[i]
+      for (let j = 0; j < machine.data.length; j++) {
+        // llenado de datos
+        for (let k = 0; k < arregloRobots.length; k++) {
+          if (arregloRobots[k][j] == null) {
+            arregloRobots[k][j] = machine.data[j].percentage
+            break
+          }
+        }
+
+      }
+    }
+
+
+    console.log(arregloRobots)
   }
 
   showChart(categories: any, procentajes: any): void {

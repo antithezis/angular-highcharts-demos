@@ -1,18 +1,18 @@
 export interface ColumnChart {
+  simulationId: number;
+  actualData: ActualDatum[];
+}
+
+export interface ActualDatum {
   machineId: number;
   machineName: string;
   data: Datum[];
+  min: number;
+  max: number;
 }
 
 export interface Datum {
-  startDate: number;
-  endDate: number;
-  status: string;
+  robotId: number;
   robotName: string;
   percentage: number;
-}
-
-export interface Welcome {
-    categories:  string;
-    procentajes: number[];
 }
