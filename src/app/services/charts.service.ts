@@ -17,7 +17,8 @@ export class ChartsService {
 
   buildColumnChart(categories: any, porcentajes: any) {
 
-    console.log(porcentajes)
+
+
 
     this.seriesOptions = {
       accessibility: {
@@ -72,7 +73,7 @@ export class ChartsService {
           '<table><tr><th style="color:#FFFFFF"colspan="2">{point.key}</th></tr>',
         pointFormat:
           // '<tr><td style="color: {series.color}">{series.name} </td>' +
-          '<tr><td style="color:#FFFFFF">{series.name} </td>' +
+          '<tr><td style="color:#FFFFFF">{point.robotName} </td>' +
           '<td style="text-align: right; color:#FFFFFF"><b>{point.y} %</b></td></tr>',
         footerFormat: '</table>',
         shared: false,
@@ -80,6 +81,7 @@ export class ChartsService {
       },
 
       plotOptions: {
+        
         column: {
           turboThreshold: 50000000,
           grouping: false,

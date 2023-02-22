@@ -10,6 +10,7 @@
                     "robotName": "Missed_36885",
                     "percentage": 21.73102306831371
                 }
+
             ],
             "min": 18.88664580546299,
             "max": 21.73102306831371
@@ -48,6 +49,10 @@
                     "robotId": 235,
                     "robotName": "VM-018",
                     "percentage": 35.45448953065916
+                },               {
+                    "robotId": 235,
+                    "robotName": "VM-018",
+                    "percentage": 50
                 }
             ],
             "min": 29.29475357375146,

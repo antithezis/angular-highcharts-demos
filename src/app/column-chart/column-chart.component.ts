@@ -49,23 +49,44 @@ export class ColumnChartComponent implements OnInit {
           .map(() => Array(numMachines).fill(null));
 
 
+        // originalData.forEach((machine, machineIndex) => {
+        //   machine.data.forEach((robot, robotIndex) => {
+        //     percentageMatrix[robotIndex][machineIndex] = robot.percentage;
+        //   });
+        // });
+
+
+        // const percentageData = percentageMatrix.map((robotPercentages, index) => {
+        //   const data = robotPercentages.map((percentage, robotIndex) => ({
+        //     y: percentage ?? 0,
+        //   }));
+        //   return { type: 'column', data };
+        // });
+
+
         originalData.forEach((machine, machineIndex) => {
           machine.data.forEach((robot, robotIndex) => {
-            percentageMatrix[robotIndex][machineIndex] = robot.percentage;
+            percentageMatrix[robotIndex][machineIndex] = {
+              percentage: robot.percentage,
+              name: robot.robotName
+            };
           });
         });
 
-        // const percentageData = percentageMatrix.map((robotPercentages) =>
-        //   robotPercentages.map((percentage) => percentage ?? 0)
-        // );
-        
-        const percentageData = percentageMatrix.map((robotPercentages) => {
-          const data = robotPercentages.map((percentage) => percentage ?? 0);
+
+        const percentageData = percentageMatrix.map((robotData) => {
+          const data = robotData.map((robot) => {
+            return {
+              y: robot?.percentage ?? 0,
+              robotName: robot?.name ?? ""
+            };
+          });
           return { type: 'column', data };
         });
+
+        console.log(percentageData)
+
         this.showChart(this.categories, percentageData)
-
-
       }
     })
   }
@@ -127,6 +148,21 @@ export class ColumnChartComponent implements OnInit {
   }
 
   showChart(categories: any, procentajes: any): void {
+    const dataTest = [
+      {
+        type: 'column',
+        data: [
+          { y: 29.9, robotName: "pee", },
+          { y: 30.9, robotName: "Cerbero", },
+        ]
+      }, {
+        type: 'column',
+        data: [
+          { y: 29.9, robotName: "poo", },
+          { y: 40.9, robotName: "canserbero", },
+        ]
+      }
+    ]
     this.columnchart = this.chartService.buildColumnChart(categories, procentajes)
     this.viewChart = true
   }
